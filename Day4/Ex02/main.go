@@ -35,76 +35,44 @@ func main() {
 
 
 	xmasCounter := 0
-/* need to rewrite this part for X-MAS instead now...
+/*
    Formats that work:
    M . M | M . S | S . S | S . M |
    . A . | . A . | . A . | . A . |
    S . S | M . S | M . M | S . M |
-   // use A as pivot point
+   use A as pivot point
 */
 	for index, data := range charArray {
 		for innerindex, celldata := range data {
-			if celldata == 'X' {
-				// Check for left
-				if innerindex-1 >= 0 && data[innerindex-1] == 'M' {
-					if innerindex-2 >= 0 && data[innerindex-2] == 'A' {
-						if innerindex-3 >= 0 && data[innerindex-3] == 'S' {
+			if celldata == 'A' {
+				// Check for up X
+				if index - 1 >= 0 && innerindex - 1 >= 0 && index + 1 < len(charArray) && innerindex+1 < len(charArray[index]) {
+					if charArray[index-1][innerindex-1] == 'M' && charArray[index-1][innerindex+1] == 'M' {
+						if charArray[index+1][innerindex-1] == 'S' && charArray[index+1][innerindex+1] == 'S' {
 							xmasCounter++
 						}
 					}
 				}
-				// Check for up
-				if index-1 >= 0 && charArray[index-1][innerindex] == 'M' {
-					if index-2 >= 0 && charArray[index-2][innerindex] == 'A' {
-						if index-3 >= 0 && charArray[index-3][innerindex] == 'S' {
+				// Check for left X
+				if index - 1 >= 0 && innerindex - 1 >= 0 && index + 1 < len(charArray) && innerindex+1 < len(charArray[index]) {
+					if charArray[index-1][innerindex-1] == 'M' && charArray[index-1][innerindex+1] == 'S' {
+						if charArray[index+1][innerindex-1] == 'M' && charArray[index+1][innerindex+1] == 'S' {
 							xmasCounter++
 						}
 					}
 				}
-				// Check for up left
-				if index-1 >= 0 && innerindex-1 >= 0 && charArray[index-1][innerindex-1] == 'M' {
-					if index-2 >= 0 && innerindex-2 >= 0 && charArray[index-2][innerindex-2] == 'A' {
-						if index-3 >= 0 && innerindex-3 >= 0 && charArray[index-3][innerindex-3] == 'S' {
+				// Check for down X
+				if index - 1 >= 0 && innerindex - 1 >= 0 && index + 1 < len(charArray) && innerindex+1 < len(charArray[index]) {
+					if charArray[index-1][innerindex-1] == 'S' && charArray[index-1][innerindex+1] == 'S' {
+						if charArray[index+1][innerindex-1] == 'M' && charArray[index+1][innerindex+1] == 'M' {
 							xmasCounter++
 						}
 					}
 				}
-				// Check for down left
-				if index+1 < len(charArray) && innerindex-1 >= 0 && charArray[index+1][innerindex-1] == 'M' {
-					if index+2 < len(charArray) && innerindex-2 >= 0 && charArray[index+2][innerindex-2] == 'A' {
-						if index+3 < len(charArray) && innerindex-3 >= 0 && charArray[index+3][innerindex-3] == 'S' {
-							xmasCounter++
-						}
-					}
-				}
-				// Check for right
-				if innerindex+1 < len(data) && data[innerindex+1] == 'M' {
-					if innerindex+2 < len(data) && data[innerindex+2] == 'A' {
-						if innerindex+3 < len(data) && data[innerindex+3] == 'S' {
-							xmasCounter++
-						}
-					}
-				}
-				// Check for down
-				if index+1 < len(charArray) && charArray[index+1][innerindex] == 'M' {
-					if index+2 < len(charArray) && charArray[index+2][innerindex] == 'A' {
-						if index+3 < len(charArray) && charArray[index+3][innerindex] == 'S' {
-							xmasCounter++
-						}
-					}
-				}
-				// Check for down right
-				if index+1 < len(charArray) && innerindex+1 < len(charArray[index+1]) && charArray[index+1][innerindex+1] == 'M' {
-					if index+2 < len(charArray) && innerindex+2 < len(charArray[index+2]) && charArray[index+2][innerindex+2] == 'A' {
-						if index+3 < len(charArray) && innerindex+3 < len(charArray[index+3]) && charArray[index+3][innerindex+3] == 'S' {
-							xmasCounter++
-						}
-					}
-				}
-				// Check for up right
-				if index-1 >= 0 && innerindex+1 < len(charArray[index-1]) && charArray[index-1][innerindex+1] == 'M' {
-					if index-2 >= 0 && innerindex+2 < len(charArray[index-2]) && charArray[index-2][innerindex+2] == 'A' {
-						if index-3 >= 0 && innerindex+3 < len(charArray[index-3]) && charArray[index-3][innerindex+3] == 'S' {
+				// Check for right X
+				if index - 1 >= 0 && innerindex - 1 >= 0 && index + 1 < len(charArray) && innerindex+1 < len(charArray[index]) {
+					if charArray[index-1][innerindex-1] == 'S' && charArray[index-1][innerindex+1] == 'M' {
+						if charArray[index+1][innerindex-1] == 'S' && charArray[index+1][innerindex+1] == 'M' {
 							xmasCounter++
 						}
 					}
