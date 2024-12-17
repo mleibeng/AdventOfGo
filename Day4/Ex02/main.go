@@ -35,7 +35,12 @@ func main() {
 
 
 	xmasCounter := 0
- // need to rewrite this part for X-MAS instead now...
+/* need to rewrite this part for X-MAS instead now...
+   Formats that work:
+   M . M | M . S | S . S | S . M |
+   . A . | . A . | . A . | . A . |
+   S . S | M . S | M . M | S . M |
+*/
 	for index, data := range charArray {
 		for innerindex, celldata := range data {
 			if celldata == 'X' {
