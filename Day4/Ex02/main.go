@@ -40,6 +40,7 @@ func main() {
    M . M | M . S | S . S | S . M |
    . A . | . A . | . A . | . A . |
    S . S | M . S | M . M | S . M |
+   // use A as pivot point
 */
 	for index, data := range charArray {
 		for innerindex, celldata := range data {
