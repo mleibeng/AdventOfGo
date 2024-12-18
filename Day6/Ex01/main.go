@@ -1,7 +1,7 @@
 package main
 
 import (
-	"encoding/csv"
+	"bufio"
 	"errors"
 	"fmt"
 	"os"
@@ -25,26 +25,61 @@ import (
 */
 
 var (
-	up = []int{-1,0}
-	down = []int{1,0}
-	left = []int{0,-1}
-	reight = []int{0,1}
+	up = [2]int{-1,0}
+	down = [2]int{1,0}
+	left = [2]int{0,-1}
+	right = [2]int{0,1}
 )
 
-func move(field [][]string, guardPos [2]int, direction []int) ([2]int, error) {
+var directions = [][]int{
+	{up[0], up[1]},
+	{right[0], right[1]},
+	{down[0], down[1]},
+	{left[0], left[1]},
+}
+
+func move(field [][]string, guardPos [2]int, direction [2]int) ([2]int, error) {
 
 	nextGuardPos := [2]int{guardPos[0] + direction[0], guardPos[1] + direction[1]}
 
 	if (nextGuardPos[0] < 0 || nextGuardPos[0] >= len(field) || nextGuardPos[1] < 0 || nextGuardPos[1] >= len(field[0])) {
 		return guardPos, fmt.Errorf("move out of bounds")
 	}
-	if (field[nextGuardPos[0]][nextGuardPos[1]] == "#") {
-
-	}
 	return nextGuardPos, nil
 }
 
-func isMoveBlocked(field [][]string, nextGuardPos [2]int, direction []int)
+func isMoveBlocked(field [][]string, guardPos [2]int, direction [2]int) (bool) {
+
+	nextGuardPos := [2]int{guardPos[0] + direction[0], guardPos[1] + direction[1]}
+
+	if (nextGuardPos[0] < 0 || nextGuardPos[0] >= len(field) || nextGuardPos[1] < 0 || nextGuardPos[1] >= len(field[0])) {
+		return false
+	}
+
+	if (field[nextGuardPos[0]][nextGuardPos[1]] == "#") {
+		return true
+	}
+	return false
+}
+
+func changeDirection(currentDirection [2]int) [2]int {
+	for i, dir := range directions {
+		if dir[0] == currentDirection[0] && dir[1] == currentDirection[1] {
+			return [2]int{directions[(i+1)%len(directions)][0], directions[(i+1)%len(directions)][1]}
+		}
+	}
+	return currentDirection
+}
+
+func splitCharacters(line string) []string {
+
+	var characters []string
+	for _, char := range line {
+		characters = append(characters, string(char))
+	}
+
+	return characters
+}
 
 func findGuardPos(field [][]string) ([2]int, error) {
 
@@ -65,17 +100,25 @@ func findGuardPos(field [][]string) ([2]int, error) {
 }
 
 func main() {
-	file, err := os.Open("input2.csv")
+	file, err := os.Open("input.csv")
 	if err != nil {
 		fmt.Println("Error in opening file")
 	}
 	defer file.Close()
 
-	readout := csv.NewReader(file)
+	scanner := bufio.NewScanner(file)
 
-	field, err := readout.ReadAll()
-	if err != nil {
-		fmt.Println("Error in readout")
+	var field [][]string
+
+	for scanner.Scan() {
+		line := scanner.Text()
+		characters := splitCharacters(line)
+		field = append(field, characters)
+	}
+
+	if err := scanner.Err(); err != nil {
+		fmt.Println("error in scanner")
+		return
 	}
 
 	guardPos, err := findGuardPos(field)
@@ -84,9 +127,11 @@ func main() {
 	}
 
 	/*for {
-	condition 1 = check which direction to go
-	condition 2 = check if next position would be blocked
-	condition 3 rotate 90degress
+	condition 1 = check if next position would be blocked
+		condition 2 rotate 90degress
+		condition 3 check if also blocked
+		etc.. until unblocked
+
 	condition 4 do the move
 	condition 5 check if move went out of map
 		if yes -> update last position with X && end loop
@@ -94,10 +139,33 @@ func main() {
 	}
 	*/
 
-	for {
+	currentDirection := up;
+	oldPos := guardPos
+	var visitCounter int
 
+	for {
+		if (isMoveBlocked(field, oldPos, currentDirection)) {
+			currentDirection = changeDirection(currentDirection)
+		} else {
+			newPos, err := move(field, oldPos, currentDirection)
+			if err != nil {
+				visitCounter++
+				fmt.Println(err)
+				break ;
+			}
+			field[oldPos[0]][oldPos[1]] = "X"
+			oldPos = newPos
+		}
 	}
 
-	// count X's
+
+	for _, visited := range field {
+		for _,visitedCell := range visited {
+			if (visitedCell == "X") {
+				visitCounter++
+			}
+		}
+	}
+	fmt.Println(visitCounter)
 
 }
