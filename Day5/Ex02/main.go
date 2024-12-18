@@ -46,6 +46,21 @@ func containsBothNumbers(numbers []int, num1, num2 int) bool {
 	return index1 && index2
 }
 
+func swap(numbers []int, num1, num2 int) {
+	index1 := -1
+	index2 := -1
+
+	for i, num := range numbers {
+		if num == num1 {
+			index1 = i
+		}
+		if num == num2 {
+			index2 = i
+		}
+	}
+	numbers[index1], numbers[index2] = numbers[index2], numbers[index1]
+}
+
 func main() {
 	file, err := os.Open("input.csv")
 	if err != nil {
@@ -90,7 +105,7 @@ func main() {
 		instructionValidation = append(instructionValidation, numbers)
 	}
 
-	var correctInstructionLines [][]int
+	var inCorrectInstructionLines [][]int
 	// var totalSum int
 
 	for _, numbers := range instructionValidation {
@@ -101,16 +116,34 @@ func main() {
 				break
 			}
 		}
-		if valid {
-			correctInstructionLines = append(correctInstructionLines, numbers)
+		if !valid {
+			inCorrectInstructionLines = append(inCorrectInstructionLines, numbers)
 		} else {
 			continue
 		}
 	}
 
+	var newCorrectInstructions [][]int
 	var totalSum int
 
-	for _, numbers := range correctInstructionLines {
+	restart := true
+	for restart {
+		restart = false
+		for _, numbers := range inCorrectInstructionLines {
+			for i := 0; i < len(numbers); i++ {
+				for _, pair := range pairRules {
+						if (containsBothNumbers(numbers, pair[0], pair[1]) && !isCorrectOrder(numbers, pair[0], pair[1])) {
+							swap(numbers, pair[0], pair[1])
+					}
+				}
+			}
+			newCorrectInstructions = append(newCorrectInstructions, numbers)
+		}
+	}
+
+	// fmt.Println(newCorrectInstructions)
+
+	for _, numbers := range newCorrectInstructions {
 		pos := len(numbers) / 2
 		numberToAdd := numbers[pos]
 		totalSum += numberToAdd
